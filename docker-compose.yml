@@ -5,14 +5,24 @@ services:
       TZ: Europe/Amsterdam
       MONGO_CONNECTION: mongodb://mongo:27017/nightscout
       API_SECRET: secretAPIatLeast12Characters
+      CUSTOM_TITLE: "Am I still alive?!"
+      TIME_FORMAT: 24
+      THEME: colors 
       BG_HIGH: 220
       BG_LOW: 60
       BG_TARGET_TOP: 180
       BG_TARGET_BOTTOM: 80
+      DISPLAY_UNITS: mmol/L
+      BASAL_RENDER: default  
       INSECURE_USE_HTTP: "true"
       AUTH_DEFAULT_ROLES: readable devicestatus-upload
-      ENABLE: careportal food iob cob basal bage iage sage cage bolus pump openaps loop override cors boluscalc bwp
-      SHOW_PLUGINS: pump openaps rawbg
+      ENABLE: careportal food iob cob basal bage iage sage cage bolus pump openaps override cors boluscalc bwp
+      SHOW_PLUGINS: pump rawbg iob cab
+      EDIT_MODE: off 
+      ALARM_URGENT_HIGH: off
+      ALARM_HIGH: off
+      ALARM_LOW: off
+      ALARM_URGENT_LOW: off
     ports:
       - "1337:1337"
     depends_on:
