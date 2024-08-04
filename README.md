@@ -5,7 +5,7 @@ This is a simple nightscout docker setup that I use on my VPS running Ubuntu 22.
 
 It is inspired by [LostOnTheLine/Nightscout_Docker-Compose](https://github.com/LostOnTheLine/Nightscout_Docker-Compose) and [dhermanns/rpi-nightscout](https://github.com/dhermanns/rpi-nightscout).
 
-I'm running the nightscout docker container as root alongside other containers without any problems.
+I'm running the nightscout docker container as root alongside other containers without problems.
 
 !Important: I have switched off the alarms by default in the docker-compose.yml. If this is something you rely on make sure to turn it back on.
 
@@ -57,9 +57,9 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 sudo docker run hello-world
 ```
 
-### Step 3 - Install and configure nginx proxy manager
+### Step 3 - Install and configure Nginx Proxy Manager
 
-We’ll create a folder “apps” to hold all of our docker-compose scripts, and a folder for nginxproxymanager inside that folder.  
+Create a folder “apps” to hold all of the docker-compose scripts, and create a folder for nginxproxymanager inside that folder.  
 
 ```
 mkdir apps
@@ -68,7 +68,7 @@ mkdir nginxproxymanager
 cd nginxproxymanager
 ```
 
-And create a docker-compose file
+Create a docker-compose file
 
 ```
 nano docker-compose.yml
@@ -117,7 +117,7 @@ mkdir nightscout
 cd nightscout
 nano docker-compose.yml
 ```
-copy paste the content of docker-compose.yml from this repository. But make sure to change the API_SECRET key to something at least 12 characters long. You can edit the plugins here too (careportal, iob etc..) For a comprehensive overview see the [nightscout](https://nightscout.github.io/) documentation.
+Copy the following code into the file. Make sure you change the API_SECRET key to something at least 12 characters long. You can edit the plugins here too (careportal, iob etc..) For a comprehensive overview see the [nightscout](https://nightscout.github.io/) documentation.
 
 ```
 version: '3.9'
@@ -162,16 +162,19 @@ services:
       - "28017:28017"
     restart: always
 ```
+Save with ctrl + x and run `docker compose up -d` to start the container.
 
-Now its time to fire up our nightscout docker container
+If everything went well you can reach your nightscout now in the browser with the direct IP of your VPS on port 1337. e.g. 127.0.0.0:1337
 
-```
-docker compose up -d
-```
-If everything went well you can reach your nightscout now in the browser on the direct IP of your VPS on port 1337. e.g. 182.229.239.135:1337
+### Step 5 - Configuring the proxy and SSL certificates with Nginx Proxy Manager
 
-Continue with the last bit of [this guide](https://medium.com/@jmpinney/multiple-wordpress-sites-on-one-server-with-docker-6fb53adc4bfe) to generate SSL certificates for your site
+Head over to where you registered your domain to set up an A record pointed at your server IP. You’ll set the host to “@” and the value to your instances IP address. If you plan on having multiple domains going to multiple instances, they will all point at the same IP — the proxy manager we installed will take care of directing traffic to the appropriate container.
 
+Head back into nginx proxy manager, login and head to hosts < proxy hosts < add proxy host. Add your domain name, the ip of your server and the port we set up earlier (1337). 
+
+Then go to the SSL tab, and request a new SSL certificate. Enable "Force SSL."
+
+Done. You can now reach your nightscout site from your domain over https.
 
 ### Stop, edit and restart your configuration
 
@@ -206,7 +209,7 @@ Your mongodb database lives inside the ~/apps/nightscout/data folder as specifie
     volumes:
       - ./data:/data/db
 ```
-You can download this folder with an SFTP connection to your VPS and back it up before reinstalling your vps or migrating to another VPS. By recreating the exact same folder structure and running the docker-compose.yml from the same root directory you will be able to continue using the same database.
+You can download this folder with an SFTP connection to your VPS and back it up before reinstalling your vps or migrating to another VPS. By recreating the exact same folder structure and running the docker-compose.yml from the same root directory you will be able to continue using the same database, without having androidAPS or xDrip+ having to sync again. It is good practice to make a backup of your database from time to time.
 
 
 
