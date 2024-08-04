@@ -127,7 +127,7 @@ services:
     environment:
       TZ: Europe/Amsterdam
       MONGO_CONNECTION: mongodb://mongo:27017/nightscout
-      API_SECRET: ChangeThisSecretKeyToSomething12AtLeast    #CHANGE THIS
+      API_SECRET: secretAPIatLeast12Characters
       CUSTOM_TITLE: "Nightscout"
       TIME_FORMAT: 24
       THEME: colors 
