@@ -1,3 +1,4 @@
+version: '3.9'
 services:
   nightscout:
     image: nightscout/cgm-remote-monitor:latest
@@ -5,7 +6,7 @@ services:
       TZ: Europe/Amsterdam
       MONGO_CONNECTION: mongodb://mongo:27017/nightscout
       API_SECRET: secretAPIatLeast12Characters
-      CUSTOM_TITLE: "Am I still alive?!"
+      CUSTOM_TITLE: "Nightscout"
       TIME_FORMAT: 24
       THEME: colors 
       BG_HIGH: 220
