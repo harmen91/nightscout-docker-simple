@@ -7,6 +7,8 @@ It is inspired by [LostOnTheLine/Nightscout_Docker-Compose](https://github.com/L
 
 I'm running the nightscout docker container as root alongside other containers without any problems.
 
+!Important: I have switched off the alarms by default in the docker-compose.yml. If this is something you rely on make sure to turn it back on.
+
 ## Guide
 
 Install and set up docker and nginx-proxy-manager as per [this guide](https://medium.com/@jmpinney/multiple-wordpress-sites-on-one-server-with-docker-6fb53adc4bfe) , ignore the wordpress bit 
