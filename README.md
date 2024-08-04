@@ -50,7 +50,7 @@ sudo apt-get update
 
 To install the latest version, run:
 ```
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 3. Verify that the Docker Engine installation is successful by running the hello-world image.
 ```
@@ -59,8 +59,56 @@ sudo docker run hello-world
 
 ### Step 3 - Install and configure nginx proxy manager
 
+We’ll create a folder “apps” to hold all of our docker-compose scripts, and a folder for nginxproxymanager inside that folder.  
 
+```
+mkdir apps
+cd apps
+mkdir nginxproxymanager
+cd nginxproxymanager
+```
 
+And create a docker-compose file
+
+```
+nano docker-compose.yml
+```
+
+Copy the following code into the file.
+
+```
+version: "3"
+services:
+  app:
+  image: 'jc21/nginx-proxy-manager:latest'
+  restart: unless-stopped
+  ports:
+  # These ports are in format <host-port>:<container-port>
+  - '80:80' # Public HTTP Port
+  - '443:443' # Public HTTPS Port
+  - '81:81' # Admin Web Port
+  # Add any other Stream port you want to expose
+  # - '21:21' # FTP
+
+  # Uncomment the next line if you uncomment anything in the section
+  # environment:
+  # Uncomment this if you want to change the location of
+  # the SQLite DB file within the container
+  # DB_SQLITE_FILE: "/data/database.sqlite"
+
+  # Uncomment this if IPv6 is not enabled on your host
+  # DISABLE_IPV6: 'true'
+
+  volumes:
+  - ./data:/data
+  - ./letsencrypt:/etc/letsencrypt
+```
+
+Save with ctrl + x and run `docker compose up -d` to start the container. Go to a web browser and type in the address of your server like so: `127.0.0.0:81`.
+
+Log in using the default credentials admin@example.com and password “changeme” and it will prompt you to create new credentials. We will come back here later.
+
+### Step 4 - Install and configure nightscout
 
 Navigate back to ~/apps and create a new directory for your nightscout app, this is where your nightscout will live, including the mongodb
 
@@ -69,7 +117,51 @@ mkdir nightscout
 cd nightscout
 nano docker-compose.yml
 ```
-copy paste the content of docker-compose.yml from this repository. Make sure to change the API Secret key to something at least 12 characters long. You can edit the plugins here too (careportal, iob etc..) For a comprehensive overview see the [nightscout](https://nightscout.github.io/) documentation.
+copy paste the content of docker-compose.yml from this repository. But make sure to change the API_SECRET key to something at least 12 characters long. You can edit the plugins here too (careportal, iob etc..) For a comprehensive overview see the [nightscout](https://nightscout.github.io/) documentation.
+
+```
+version: '3.9'
+services:
+  nightscout:
+    image: nightscout/cgm-remote-monitor:latest
+    environment:
+      TZ: Europe/Amsterdam
+      MONGO_CONNECTION: mongodb://mongo:27017/nightscout
+      API_SECRET: ChangeThisSecretKeyToSomething12AtLeast    #CHANGE THIS
+      CUSTOM_TITLE: "Nightscout"
+      TIME_FORMAT: 24
+      THEME: colors 
+      BG_HIGH: 220
+      BG_LOW: 60
+      BG_TARGET_TOP: 180
+      BG_TARGET_BOTTOM: 80
+      DISPLAY_UNITS: mmol/L
+      BASAL_RENDER: default  
+      INSECURE_USE_HTTP: "true"
+      AUTH_DEFAULT_ROLES: readable devicestatus-upload
+      ENABLE: careportal food iob cob basal bage iage sage cage bolus pump openaps override cors boluscalc bwp
+      SHOW_PLUGINS: pump rawbg iob cob
+      EDIT_MODE: off 
+      ALARM_URGENT_HIGH: off
+      ALARM_HIGH: off
+      ALARM_LOW: off
+      ALARM_URGENT_LOW: off
+    ports:
+      - "1337:1337"
+    depends_on:
+      - mongo
+    restart: always
+  mongo:
+    image: mongo:4.4.9
+    volumes:
+      - ./data:/data/db                                                                      
+    ports:
+      - "27017:27017"
+      - "27018:27018"
+      - "27019:27019"
+      - "28017:28017"
+    restart: always
+```
 
 Now its time to fire up our nightscout docker container
 
@@ -98,6 +190,11 @@ docker stop <CONTAINER ID MONGODB>
 
 Now you can make changes to your docker-compose.yml and rerun the following command inside the ~/apps/nightscout directory to start it again.
 
+```
+docker compose up -d
+```
+
+Alternatively you can make changes to your docker-compose.yml file while its still running and restart it with the following command. But make sure to add the --remove-orphans argument in this case.
 ```
 docker compose up -d --remove-orphans
 ```
