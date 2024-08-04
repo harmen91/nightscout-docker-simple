@@ -17,7 +17,7 @@ services:
       INSECURE_USE_HTTP: "true"
       AUTH_DEFAULT_ROLES: readable devicestatus-upload
       ENABLE: careportal food iob cob basal bage iage sage cage bolus pump openaps override cors boluscalc bwp
-      SHOW_PLUGINS: pump rawbg iob cab
+      SHOW_PLUGINS: pump rawbg iob cob
       EDIT_MODE: off 
       ALARM_URGENT_HIGH: off
       ALARM_HIGH: off
