@@ -11,7 +11,56 @@ I'm running the nightscout docker container as root alongside other containers w
 
 ## Guide
 
-Install and set up docker and nginx-proxy-manager as per [this guide](https://medium.com/@jmpinney/multiple-wordpress-sites-on-one-server-with-docker-6fb53adc4bfe) , ignore the wordpress bit 
+### Step 1 - Connect to your VPS and update system
+
+Open a terminal on your computer and ssh into the VPS.
+```
+ssh root@<IP_OF_YOUR_VPS>
+```
+
+First we’ll update the system.
+
+```
+sudo apt-get update && sudo apt-get upgrade
+```
+
+### Step 2 - Install Docker
+
+As per [docs.docker.com](https://docs.docker.com/engine/install/ubuntu/):
+
+Before you install Docker Engine for the first time on a new host machine, you need to set up the Docker repository. Afterward, you can install and update Docker from the repository.
+
+1. Set up Docker's apt repository.
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+2. Install the Docker packages.
+
+To install the latest version, run:
+```
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+3. Verify that the Docker Engine installation is successful by running the hello-world image.
+```
+sudo docker run hello-world
+```
+
+### Step 3 - Install and configure nginx proxy manager
+
+
+
 
 Navigate back to ~/apps and create a new directory for your nightscout app, this is where your nightscout will live, including the mongodb
 
