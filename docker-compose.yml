@@ -11,7 +11,8 @@ services:
       BG_TARGET_BOTTOM: 80
       INSECURE_USE_HTTP: "true"
       AUTH_DEFAULT_ROLES: readable devicestatus-upload
-      ENABLE: alexa rawbg
+      ENABLE: careportal food iob cob basal bage iage sage cage bolus pump openaps loop override cors boluscalc bwp
+      SHOW_PLUGINS: pump openaps rawbg
     ports:
       - "1337:1337"
     depends_on:
